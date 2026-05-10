@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>EpinStoreOffc - Super Reseller Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(180deg, #0a0a0a 0%, #1a0a00 50%, #ff6600 100%);
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .navbar {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,102,0,0.3);
+        }
+        .logo h2 { color: #ffaa00; font-size: 20px; }
+        .logo span { color: white; font-size: 12px; }
+        .user-info { color: white; display: flex; align-items: center; gap: 15px; }
+        .badge { background: #ffaa00; color: #0a0a0a; padding: 5px 12px; border-radius: 20px; font-weight: bold; }
+        .btn-logout { background: rgba(255,255,255,0.2); border: none; padding: 8px 16px; border-radius: 10px; color: white; cursor: pointer; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,102,0,0.3);
+        }
+        .stat-card i { font-size: 2rem; color: #ffaa00; margin-bottom: 10px; }
+        .stat-card h3 { color: rgba(255,255,255,0.8); font-size: 0.85rem; }
+        .stat-card p { color: #ffaa00; font-size: 2rem; font-weight: bold; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,102,0,0.3);
+            padding: 12px 24px;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+        }
+        .tab-btn.active { background: #ffaa00; color: #0a0a0a; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .card {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,102,0,0.3);
+        }
+        .card h2 { color: #ffaa00; margin-bottom: 20px; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,102,0,0.3);
+            border-radius: 12px;
+            color: white;
+        }
+        button {
+            background: linear-gradient(90deg, #ffaa00, #cc8800);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: #0a0a0a;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .number-list { max-height: 400px; overflow-y: auto; }
+        .number-item {
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn-small { padding: 6px 12px; width: auto; margin: 0 5px; }
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .number-item { flex-direction: column; }
+            .btn-small { width: 100%; margin: 5px 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <h2>EPINSTORE<span>OFFC</span></h2>
+                <span>Super Reseller Dashboard</span>
+            </div>
+            <div class="user-info">
+                <span class="badge"><i class="fas fa-star"></i> SUPER RESELLER</span>
+                <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card"><i class="fas fa-check-circle"></i><div><h3>Total Nomer</h3><p id="totalNumbers">0</p></div></div>
+            <div class="stat-card"><i class="fas fa-users"></i><div><h3>Reseller Saya</h3><p id="totalReseller">0</p></div></div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="add">Add Number</button>
+            <button class="tab-btn" data-tab="manage">Manage Numbers</button>
+            <button class="tab-btn" data-tab="reseller">Manage Reseller</button>
+        </div>
+
+        <div id="addTab" class="tab-content active">
+            <div class="card">
+                <h2><i class="fas fa-plus-circle"></i> Add New Number</h2>
+                <form id="addForm">
+                    <input type="text" id="phoneNumber" placeholder="628123456789" required>
+                    <button type="submit">Add Number</button>
+                </form>
+                <div id="addResult" style="margin-top:15px; color:#ffaa00;"></div>
+            </div>
+        </div>
+
+        <div id="manageTab" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-list"></i> Active Numbers</h2>
+                <div class="number-list" id="activeList"></div>
+            </div>
+        </div>
+
+        <div id="resellerTab" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-users"></i> Manage Reseller</h2>
+                <div id="resellerList"></div>
+                <form id="addResellerForm" style="margin-top:20px;">
+                    <input type="text" id="resellerPhone" placeholder="Nomor Reseller (628xxxx)" required>
+                    <input type="text" id="resellerName" placeholder="Nama Reseller">
+                    <input type="text" id="resellerPass" placeholder="Password" value="reseller123">
+                    <button type="submit">Add Reseller</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const FIREBASE_URL = 'https://epin-3b848-default-rtdb.asia-southeast1.firebasedatabase.app/';
+        
+        async function fetchData(url) {
+            try {
+                const res = await fetch(url);
+                return await res.json();
+            } catch (e) { return null; }
+        }
+
+        async function loadStats() {
+            const numbers = await fetchData(FIREBASE_URL + 'epin_active_numbers.json');
+            const total = Array.isArray(numbers) ? numbers.length : 0;
+            document.getElementById('totalNumbers').innerText = total;
+            
+            const users = await fetchData(FIREBASE_URL + 'epin_users.json');
+            let reseller = 0;
+            if (users) {
+                Object.values(users).forEach(u => { if (u.role === 'reseller') reseller++; });
+            }
+            document.getElementById('totalReseller').innerText = reseller;
+        }
+
+        async function loadActiveList() {
+            const numbers = await fetchData(FIREBASE_URL + 'epin_active_numbers.json');
+            const container = document.getElementById('activeList');
+            if (!numbers || numbers.length === 0) {
+                container.innerHTML = '<p style="color:white;">Tidak ada nomer terdaftar</p>';
+                return;
+            }
+            container.innerHTML = numbers.map(num => `
+                <div class="number-item">
+                    <span><i class="fas fa-phone"></i> ${num}</span>
+                    <div>
+                        <button class="btn-small" onclick="deleteNumber('${num}')"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function deleteNumber(num) {
+            if (!confirm(`Hapus ${num}?`)) return;
+            const numbers = await fetchData(FIREBASE_URL + 'epin_active_numbers.json');
+            const newNumbers = Array.isArray(numbers) ? numbers.filter(n => n !== num) : [];
+            await fetch(FIREBASE_URL + 'epin_active_numbers.json', {
+                method: 'PUT',
+                body: JSON.stringify(newNumbers),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            alert('Berhasil dihapus!');
+            loadStats();
+            loadActiveList();
+        }
+
+        document.getElementById('addForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('phoneNumber').value;
+            if (!phone.match(/^62\d{8,13}$/)) {
+                document.getElementById('addResult').innerHTML = 'Format nomor salah!';
+                return;
+            }
+            const numbers = await fetchData(FIREBASE_URL + 'epin_active_numbers.json');
+            const current = Array.isArray(numbers) ? numbers : [];
+            if (current.includes(phone)) {
+                document.getElementById('addResult').innerHTML = 'Nomor sudah terdaftar!';
+                return;
+            }
+            current.push(phone);
+            await fetch(FIREBASE_URL + 'epin_active_numbers.json', {
+                method: 'PUT',
+                body: JSON.stringify(current),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            document.getElementById('addResult').innerHTML = '✅ Berhasil ditambahkan!';
+            document.getElementById('phoneNumber').value = '';
+            loadStats();
+            loadActiveList();
+        });
+
+        async function loadResellerList() {
+            const users = await fetchData(FIREBASE_URL + 'epin_users.json');
+            const container = document.getElementById('resellerList');
+            if (!users) {
+                container.innerHTML = '<p style="color:white;">Tidak ada reseller</p>';
+                return;
+            }
+            let html = '<div class="number-list">';
+            for (const [phone, user] of Object.entries(users)) {
+                if (user.role === 'reseller') {
+                    html += `
+                        <div class="number-item">
+                            <span>${phone} - ${user.name || 'Reseller'}</span>
+                            <div>
+                                <button class="btn-small" onclick="deleteReseller('${phone}')">Hapus</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        async function deleteReseller(phone) {
+            if (!confirm(`Hapus reseller ${phone}?`)) return;
+            await fetch(FIREBASE_URL + 'epin_users/' + phone + '.json', {
+                method: 'DELETE'
+            });
+            alert('Reseller dihapus!');
+            loadResellerList();
+            loadStats();
+        }
+
+        document.getElementById('addResellerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('resellerPhone').value;
+            const name = document.getElementById('resellerName').value;
+            const password = document.getElementById('resellerPass').value;
+            if (!phone.match(/^62\d{8,13}$/)) {
+                alert('Format nomor salah!');
+                return;
+            }
+            await fetch(FIREBASE_URL + 'epin_users/' + phone + '.json', {
+                method: 'PUT',
+                body: JSON.stringify({ role: 'reseller', name: name, password: password, createdAt: new Date().toISOString() }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            alert('Reseller berhasil ditambahkan!');
+            document.getElementById('resellerPhone').value = '';
+            document.getElementById('resellerName').value = '';
+            loadResellerList();
+            loadStats();
+        });
+
+        // Tabs
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab + 'Tab').classList.add('active');
+                if (btn.dataset.tab === 'manage') loadActiveList();
+                if (btn.dataset.tab === 'reseller') loadResellerList();
+            });
+        });
+
+        function logout() {
+            localStorage.removeItem('epin_session');
+            window.location.href = 'index.html';
+        }
+
+        loadStats();
+        loadActiveList();
+        setInterval(loadStats, 10000);
+    </script>
+</body>
+</html>

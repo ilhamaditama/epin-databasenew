@@ -1,0 +1,14 @@
+{
+  "name": "epin-database",
+  "version": "1.0.0",
+  "description": "EpinStoreOffc License Database API",
+  "type": "module",
+  "main": "api/numbers.js",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "start": "node api/numbers.js"
+  },
+  "dependencies": {}
+}

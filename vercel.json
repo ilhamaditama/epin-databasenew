@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "functions": {
+    "api/numbers.js": {
+      "runtime": "nodejs24.x"
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/numbers",
+      "dest": "/api/numbers.js"
+    },
+    {
+      "src": "/api/numbers.js",
+      "dest": "/api/numbers.js"
+    }
+  ]
+}
